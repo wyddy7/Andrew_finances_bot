@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+    bot:
+        build: .
+        restart: always
+        env_file:
+            - .env
+        volumes:
+            - ./logs:/app/logs
+            - ./data:/app/data # Здесь будет храниться файл SQLite
+        networks:
+            - bot_network
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "python",
+                    "-c",
+                    "import sys; sys.exit(0) if open('/app/logs/bot.log', 'a').close() is None else 1",
+                ]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 10s
+
+networks:
+    bot_network:
+        driver: bridge

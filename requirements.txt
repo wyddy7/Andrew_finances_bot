@@ -1,0 +1,14 @@
+python-telegram-bot==20.8
+python-dotenv==1.0.1
+SQLAlchemy==2.0.27
+psycopg2-binary==2.9.9  # Для PostgreSQL
+aiosqlite==0.19.0  # Для SQLite
+pytest==8.0.2
+pytest-cov==4.1.0
+black==24.2.0
+flake8==7.0.0
+mypy==1.9.0
+python-logging-loki==0.3.1
+aiohttp==3.9.3
+alembic==1.13.1
+openpyxl 

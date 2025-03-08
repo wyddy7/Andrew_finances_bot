@@ -1,0 +1,3 @@
+"""
+Finance Bot package
+"""

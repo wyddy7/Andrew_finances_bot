@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Виртуальное окружение
+venv/
+env/
+.env
+
+# Кэши Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Логи и данные
+logs/
+*.log
+data/*.db
+*.sqlite
+finance.db
+
+# Документация
+docs/
+
+# Тесты
+tests/
+
+# IDE
+.vscode/
+.idea/
+
+# Скрипты деплоя
+scripts/deploy.*
+
+# Прочее
+*.tar.gz
+README.md
+LICENSE 
