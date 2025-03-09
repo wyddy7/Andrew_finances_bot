@@ -16,5 +16,5 @@ RUN mkdir -p logs data
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
-# Запуск приложения
-CMD ["python", "src/run.py"] 
+# Инициализация БД и запуск бота
+CMD python src/init_db.py && python src/run.py
