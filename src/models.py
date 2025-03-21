@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import (
     Column,
     Integer,
@@ -5,13 +6,15 @@ from sqlalchemy import (
     Float,
     DateTime,
     ForeignKey,
-    Enum,
+    Enum as SQLEnum,
     BigInteger,
 )
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from sqlalchemy.ext.declarative import declarative_base
 import enum
 from src.database import Base
+
+Base = declarative_base()
 
 
 class TransactionType(enum.Enum):
@@ -42,13 +45,13 @@ class Transaction(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String, nullable=True)
-    type = Column(Enum(TransactionType), nullable=False)
+    type = Column(SQLEnum(TransactionType), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Отношения
     user = relationship("User", back_populates="transactions")
-    category = relationship("Category")
+    category = relationship("Category", back_populates="transactions")
 
     def __repr__(self):
         return f"<Transaction {self.type.value} {self.amount}>"
@@ -58,10 +61,10 @@ class Category(Base):
     __tablename__ = "categories"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    keywords = Column(
-        String, nullable=True
-    )  # Ключевые слова для автоматической категоризации
+    name = Column(String, unique=True, nullable=False)
+    order = Column(Integer, default=999)
+
+    transactions = relationship("Transaction", back_populates="category")
 
     def __repr__(self):
         return f"<Category {self.name}>"

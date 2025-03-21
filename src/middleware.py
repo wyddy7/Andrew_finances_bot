@@ -5,6 +5,7 @@ import json
 import time
 from datetime import datetime
 from src.logger import bot_logger, metrics_logger
+from collections import defaultdict
 
 
 class LoggingMiddleware:
@@ -150,3 +151,43 @@ class MetricsMiddleware:
                 exc_info=True,
             )
             raise
+
+
+class RateLimitMiddleware:
+    """Middleware для ограничения количества операций"""
+
+    def __init__(self, max_operations: int = 100, time_window: int = 600):
+        self.max_operations = max_operations  # Максимум 100 операций
+        self.time_window = time_window  # За 10 минут (600 секунд)
+        self.user_operations = defaultdict(list)
+
+    async def __call__(
+        self,
+        update: Update,
+        context: ContextTypes.DEFAULT_TYPE,
+        handler: Callable[[Update, ContextTypes.DEFAULT_TYPE], Awaitable[Any]],
+    ) -> Any:
+        if not update.effective_user:
+            return await handler(update, context)
+
+        user_id = update.effective_user.id
+        current_time = time.time()
+
+        # Очистка старых операций
+        self.user_operations[user_id] = [
+            op_time
+            for op_time in self.user_operations[user_id]
+            if current_time - op_time < self.time_window
+        ]
+
+        # Проверка лимита
+        if len(self.user_operations[user_id]) >= self.max_operations:
+            await update.effective_message.reply_text(
+                "Превышен лимит операций. Пожалуйста, подождите несколько минут."
+            )
+            return None
+
+        # Добавление новой операции
+        self.user_operations[user_id].append(current_time)
+
+        return await handler(update, context)

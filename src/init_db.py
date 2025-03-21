@@ -1,11 +1,16 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sqlalchemy import create_engine
-from models import Base, Category
-from database import SessionLocal
+from src.models import Base, Category
+from src.database import SessionLocal
 
 
 def init_db():
     # Создаем все таблицы
-    engine = create_engine("sqlite:///finance.db")
+    db_path = os.path.join("data", "finance_bot.db")
+    engine = create_engine(f"sqlite:///{db_path}")
     Base.metadata.create_all(engine)
 
     # Создаем сессию
@@ -27,11 +32,11 @@ def init_db():
     ]
 
     # Проверяем существующие категории
-    existing_categories = {cat.name for cat in db.query(Category).all()}
+    existing_categories = {cat.name.lower() for cat in db.query(Category).all()}
 
     # Добавляем недостающие категории
     for category_name in default_categories:
-        if category_name not in existing_categories:
+        if category_name.lower() not in existing_categories:
             category = Category(name=category_name)
             db.add(category)
 
