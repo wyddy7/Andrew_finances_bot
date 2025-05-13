@@ -13,7 +13,7 @@ import argparse # Добавляем импорт argparse
 DATABASE_PATH = os.path.join("data", "finance_bot.db")
 # Название таблицы и столбца
 TABLE_NAME = "users"
-CHAT_ID_COLUMN = "chat_id"
+CHAT_ID_COLUMN = "telegram_id"
 # Задержка между отправкой сообщений (в секундах) для избежания лимитов Telegram
 SEND_DELAY = 0.1
 # --- КОНЕЦ НАСТРОЕК ---
