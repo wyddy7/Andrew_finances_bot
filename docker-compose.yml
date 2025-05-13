@@ -1,12 +1,10 @@
 version: "3.8"
-
 services:
     bot:
         build: .
         restart: always
-        env_file:
-            - .env
         volumes:
+            - ./data:/app/data
             - ./logs:/app/logs
             - ./data:/app/data # Здесь будет храниться файл SQLite
             - ./env:/app/.env
